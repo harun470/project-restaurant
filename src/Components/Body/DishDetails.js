@@ -13,7 +13,7 @@ export default function DishDetails(props) {
                         <p>{props.dish.description}</p>
                         <p>{props.dish.price} /-</p>
                         <hr />
-                        <LoadComments comments={props.dish.comments}/>
+                        <LoadComments comments={props.comments}/>
                     </CardText>
                 </CardBody>
             </Card>
