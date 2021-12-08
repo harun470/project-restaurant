@@ -1,18 +1,33 @@
 import React, { Component } from 'react'
-import DISHES from '../../Data/Dishes.js'
 import MenuItem from './MenuItem.js'
 import DishDetails from './DishDetails.js'
 import { Button, CardColumns, Modal, ModalBody,ModalFooter } from 'reactstrap'
-import Comments from '../../Data/Comments'
+import {connect} from 'react-redux'
+import { addComment } from '../../redux/actionCreator.js'
 
 
-export default class Menu extends Component {
+const mapStateToProps=(state)=>{
+    return{
+        dishes : state.dishes,
+        comments :state.comments
+    }
+}
+
+const mapDispatchToProps= dispatch=>{
+    return{
+        addComment:(dishId,author,rating,comment)=>dispatch(addComment(dishId,author,rating,comment)
+                
+        )
+    }
+}
+
+
+ class Menu extends Component {
     constructor(props) {
         super(props)
     
         this.state = {
-             dishes: DISHES ,
-             comments :Comments,
+             
              selectedDish :null,
              modalOPen :false
         }
@@ -33,7 +48,7 @@ export default class Menu extends Component {
     
     render() {
         document.title= 'Menu'
-        const menu= this.state.dishes.map(item=>{
+        const menu= this.props.dishes.map(item=>{
             return(
                 <MenuItem dish={item} key={item.id} dishSelect={()=>this.onDishSelect(item)} />
             )
@@ -42,10 +57,10 @@ export default class Menu extends Component {
     
         let dishDetaile=null;
         if (this.state.selectedDish!=null){
-            const comments= this.state.comments.filter(comment=>{
+            const comments= this.props.comments.filter(comment=>{
                 return comment.dishId===this.state.selectedDish.id
             })
-            dishDetaile= <DishDetails comments={comments} dish={this.state.selectedDish} />
+            dishDetaile= <DishDetails comments={comments} addComment={this.props.addComment} dish={this.state.selectedDish} />
         }
         return (
             
@@ -57,7 +72,7 @@ export default class Menu extends Component {
                           {menu}
                       </CardColumns> 
 
-                      <Modal isOpen={this.state.modalOPen} onClick={this.toggleModal}>
+                      <Modal isOpen={this.state.modalOPen} >
                           <ModalBody>
                               {dishDetaile}
                           </ModalBody>
@@ -76,3 +91,4 @@ export default class Menu extends Component {
         )
     }
 }
+export default connect(mapStateToProps,mapDispatchToProps) (Menu);

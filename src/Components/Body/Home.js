@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 
-export default class Home extends Component {
+
+
+ class Home extends Component {
     render() {
         document.title= 'Burger King'
         return (
@@ -10,3 +12,5 @@ export default class Home extends Component {
         )
     }
 }
+
+export default Home;
