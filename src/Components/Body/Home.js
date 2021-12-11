@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Bodyloading from './Bodyloading'
 
 
 
@@ -7,7 +8,7 @@ import React, { Component } from 'react'
         document.title= 'Burger King'
         return (
             <div>
-                
+                <Bodyloading />
             </div>
         )
     }

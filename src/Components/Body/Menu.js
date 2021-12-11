@@ -3,7 +3,8 @@ import MenuItem from './MenuItem.js'
 import DishDetails from './DishDetails.js'
 import { Button, CardColumns, Modal, ModalBody,ModalFooter } from 'reactstrap'
 import {connect} from 'react-redux'
-import { addComment } from '../../redux/actionCreator.js'
+import { addComment, fetchDishes } from '../../redux/actionCreator.js'
+import Bodyloading from './Bodyloading.js'
 
 
 const mapStateToProps=(state)=>{
@@ -15,9 +16,8 @@ const mapStateToProps=(state)=>{
 
 const mapDispatchToProps= dispatch=>{
     return{
-        addComment:(dishId,author,rating,comment)=>dispatch(addComment(dishId,author,rating,comment)
-                
-        )
+        addComment:(dishId,author,rating,comment)=>dispatch(addComment(dishId,author,rating,comment)),
+        fetchDishes:()=>dispatch(fetchDishes())
     }
 }
 
@@ -45,50 +45,62 @@ const mapDispatchToProps= dispatch=>{
             modalOPen : !this.state.modalOPen
         })
     }
+
+    componentDidMount(){
+        this.props.fetchDishes()
+    }
     
     render() {
         document.title= 'Menu'
-        const menu= this.props.dishes.map(item=>{
+        if(this.props.dishes.isLoading){
             return(
-                <MenuItem dish={item} key={item.id} dishSelect={()=>this.onDishSelect(item)} />
+                <Bodyloading />
             )
-        })
-
-    
-        let dishDetaile=null;
-        if (this.state.selectedDish!=null){
-            const comments= this.props.comments.filter(comment=>{
-                return comment.dishId===this.state.selectedDish.id
-            })
-            dishDetaile= <DishDetails comments={comments} addComment={this.props.addComment} dish={this.state.selectedDish} />
-        }
-        return (
             
-           
-                <div className='container'>
-                    <div className='row'>
-
-                      <CardColumns>
-                          {menu}
-                      </CardColumns> 
-
-                      <Modal isOpen={this.state.modalOPen} >
-                          <ModalBody>
-                              {dishDetaile}
-                          </ModalBody>
-                          
-                          <ModalFooter >
-                              <Button color='primary' onClick={this.toggleModal}>
-                                  close
-                              </Button>
-                          </ModalFooter>
-                      </Modal> 
-                    
+        }else{
+            const menu= this.props.dishes.dishes.map(item=>{
+                return(
+                    <MenuItem dish={item} key={item.id} dishSelect={()=>this.onDishSelect(item)} />
+                )
+            })
+    
+        
+            let dishDetaile=null;
+            if (this.state.selectedDish!=null){
+                const comments= this.props.comments.filter(comment=>{
+                    return comment.dishId===this.state.selectedDish.id
+                })
+                dishDetaile= <DishDetails comments={comments} addComment={this.props.addComment} dish={this.state.selectedDish} />
+            }
+            return (
+                
+               
+                    <div className='container'>
+                        <div className='row'>
+    
+                          <CardColumns>
+                              {menu}
+                          </CardColumns> 
+    
+                          <Modal isOpen={this.state.modalOPen} >
+                              <ModalBody>
+                                  {dishDetaile}
+                              </ModalBody>
+                              
+                              <ModalFooter >
+                                  <Button color='primary' onClick={this.toggleModal}>
+                                      close
+                                  </Button>
+                              </ModalFooter>
+                          </Modal> 
+                        
+                        </div>
                     </div>
-                </div>
-          
-           
-        )
-    }
+              
+               
+            )
+        }
+        }
+        
 }
 export default connect(mapStateToProps,mapDispatchToProps) (Menu);
