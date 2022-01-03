@@ -11,7 +11,7 @@ import React, { Component } from 'react'
         document.title= 'Burger King'
         return (
             <div>
-                
+                hello
             </div>
         )
     }
