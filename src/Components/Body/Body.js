@@ -5,12 +5,15 @@ import Home from './Home'
 import Menu from './Menu'
 import {Route, Routes} from 'react-router-dom'
 
+
+
 export default function Body() {
+   
     return (
         <div>
             
-          <Routes>
-            <Route path='/' element={<Home />} />
+          <Routes >
+            <Route  path='/' element={<Home />} />
            
             <Route path='/menu'  element ={<Menu />} />
             

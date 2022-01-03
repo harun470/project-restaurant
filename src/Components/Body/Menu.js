@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import MenuItem from './MenuItem.js'
 import DishDetails from './DishDetails.js'
-import { Button, CardColumns, Modal, ModalBody,ModalFooter } from 'reactstrap'
+import { Alert, Button, CardColumns, Modal, ModalBody,ModalFooter } from 'reactstrap'
 import {connect} from 'react-redux'
 import { addComment, fetchDishes,fetchComments } from '../../redux/actionCreator.js'
 import Bodyloading from './Bodyloading.js'
@@ -60,6 +60,10 @@ const mapDispatchToProps= dispatch=>{
                 <Bodyloading />
             )
             
+        }else if(this.props.dishes.errMess!=null){
+            return(
+            <Alert color='danger'>{this.props.dishes.errMess}</Alert>
+            )
         }else{
             const menu= this.props.dishes.dishes.map(item=>{
                 return(

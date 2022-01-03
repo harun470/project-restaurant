@@ -1,8 +1,10 @@
 /* eslint-disable react/jsx-pascal-case */
 import React, { Component } from 'react'
-import { Col, FormGroup, Label,Button } from 'reactstrap'
+import { Col, FormGroup, Label,Button, Alert } from 'reactstrap'
 import { Form,Control,Errors,actions } from 'react-redux-form';
 import { connect } from 'react-redux';
+import axios from 'axios';
+import { baseUrl } from '../../redux/baseUrl';
 
 const mapDispatchToProps=dispatch=>{
     return{
@@ -16,10 +18,41 @@ const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val
 
 class Contactus extends Component {
 
-
+    state={
+        alertShow:false,
+        alertType:null,
+        alertText:null
+    }
 
     handleSubmit=(values)=>{
-        console.log(values)
+       axios.post(baseUrl+"feedback",values)
+       .then(response=>response.status)
+       .then(status=>{
+           if (status===201){
+                this.setState({
+                    alertShow:true,
+                    alertText:"submitted successfully",
+                    alertType:'success'
+                })
+                setTimeout(()=>{
+                    this.setState({
+                        alertShow:false
+                    })
+                },2000)
+           }
+       })
+       .catch(error=>{
+           this.setState({
+               alertShow:true,
+               alertText:error.message,
+               alertType:'danger'
+           })
+           setTimeout(()=>{
+            this.setState({
+                alertShow:false
+            })
+        },5000)
+       })
         this.props.resetFeedbackForm()
         
     }
@@ -28,8 +61,10 @@ class Contactus extends Component {
         return (
             <div className="container">
                 <div className="row row-content" style={{ paddingLeft: "20px", textAlign: "left" }}>
+                    
                     <div className="col-12">
                         <h3>Send us your feedback</h3>
+                        <Alert isOpen={this.state.alertShow} color={this.state.alertType}>{this.state.alertText}</Alert>
                     </div>
                     <div className="col-12  col-md-7">
                         <Form model='feedback' onSubmit={(values)=>this.handleSubmit(values)}>

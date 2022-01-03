@@ -7,12 +7,13 @@ import { createForms } from 'react-redux-form'
  
 
 
-const dishReducer=(dishState={isLoading:false,dishes:[]},action)=>{
+const dishReducer=(dishState={isLoading:false,dishes:[],errMess:null},action)=>{
     switch(action.type){
         case actionTypes.DISH_LOADING:
             return{
                     ...dishState,
                     isLoading:true,
+                    errMess:null,
                     dishes:[]
             }
 
@@ -20,7 +21,15 @@ const dishReducer=(dishState={isLoading:false,dishes:[]},action)=>{
             return{
                 ...dishState,
                 isLoading:false,
+                errMess:null,
                 dishes:action.payload
+            }
+        case actionTypes.DISHES_FAILED:
+            return{
+                ...dishState,
+                errMess:action.payload,
+                isLoading:false,
+                dishes:[]
             }
         default:
             return dishState
@@ -41,12 +50,13 @@ const commentReducer=(commentState={isLoading:false,comments:[]},action)=>{
                     isLoading:true,
                     comments:[]
                 }
-                
+
         case actionTypes.ADD_COMMENT:
             let comment= action.payload
-            comment.id=commentState.length
-            comment.date=new Date().toDateString()
-            return commentState.concat(comment)
+            return{
+                ...commentState,
+                comments:commentState.comments.concat(comment)
+            } 
     
         default: 
         return commentState
